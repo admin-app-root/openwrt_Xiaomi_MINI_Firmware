@@ -1,0 +1,57 @@
+name: Build Firmware
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-firmware:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Clone repository
+        run: git clone https://github.com/coolsnowwolf/lede
+        
+      - name: Change directory
+        run: cd lede
+
+      - name: Set up Ubuntu environment
+        run: |
+          sudo apt update -y > /dev/null
+          sudo apt full-upgrade -y > /dev/null
+          sudo apt install -y ack antlr3 aria2 asciidoc autoconf automake autopoint binutils bison build-essential \
+          bzip2 ccache cmake cpio curl device-tree-compiler fastjar flex gawk gettext gcc-multilib g++-multilib \
+          git gperf haveged help2man intltool libc6-dev-i386 libelf-dev libglib2.0-dev libgmp3-dev libltdl-dev \
+          libmpc-dev libmpfr-dev libncurses5-dev libncursesw5-dev libreadline-dev libssl-dev libtool lrzsz \
+          mkisofs msmtp nano ninja-build p7zip p7zip-full patch pkgconf python2.7 python3 python3-pip libpython3-dev qemu-utils \
+          rsync scons squashfs-tools subversion swig texinfo uglifyjs upx-ucl unzip vim wget xmlto xxd zlib1g-dev > /dev/null
+
+      - name: Update configuration
+        run: ./scripts/feeds update -a
+
+      - name: Install configuration
+        run: ./scripts/feeds install -a
+
+      - name: Build firmware
+        run: make V=s -j$$(nproc)
+
+      - name: Create release
+        uses: actions/create-release@v1
+        with:
+          tag_name: v1.0.0
+          release_name: Firmware Release
+          body: This is a release of the firmware
+          draft: false
+          prerelease: false
+
+      - name: Upload firmware
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: $${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./firmware/
+          asset_name: firmware.zip
+          asset_content_type: application/zip
