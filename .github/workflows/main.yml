@@ -29,22 +29,21 @@ jobs:
         run: |
           cd lede
           wget https://raw.githubusercontent.com/admin-app-root/openwrt_Xiaomi_MINI_Firmware/main/.config
+          pwd
+          ls
         
 
       - name: Update configuration
-        run: |
-          cd lede
-          ./scripts/feeds update -a
+        working-directory: lede
+        run: ./scripts/feeds update -a
 
       - name: Install configuration
-        run: |
-          cd lede
-          ./scripts/feeds install -a
+        working-directory: lede
+        run: ./scripts/feeds install -a
 
       - name: Build firmware
-        run: |
-          cd lede
-          make V=s -j$$(nproc)
+        working-directory: lede
+        run: make V=s -j$$(nproc)
 
       - name: Create release
         uses: actions/create-release@v1
