@@ -28,8 +28,7 @@ jobs:
       - name: Config Download
         run: |
           cd lede
-          wget https://github.com/aebb235f-cfa9-4aac-9164-5e5248ea4e0e
-          mv aebb235f-cfa9-4aac-9164-5e5248ea4e0e .config
+          wget https://raw.githubusercontent.com/admin-app-root/openwrt_Xiaomi_MINI_Firmware/main/.config
         
 
       - name: Update configuration
