@@ -43,7 +43,7 @@ jobs:
 
       - name: Build firmware
         working-directory: lede
-        run: make V=s -j$$(nproc)
+        run: make V=s -j$(nproc)
 
       - name: Create release
         uses: actions/create-release@v1
@@ -58,6 +58,6 @@ jobs:
         uses: actions/upload-release-asset@v1
         with:
           upload_url: $${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./firmware/
+          asset_path: ./lede/firmware/
           asset_name: firmware.zip
           asset_content_type: application/zip
