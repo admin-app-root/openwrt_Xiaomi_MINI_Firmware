@@ -43,7 +43,7 @@ jobs:
 
       - name: Build firmware
         working-directory: lede
-        run: make -j$(nproc)
+        run: make -j1 V=s
 
       - name: Create release
         uses: actions/create-release@v1
